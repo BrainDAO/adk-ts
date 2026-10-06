@@ -4,7 +4,9 @@
 	"description": "Examples for building AI agents in TypeScript with ADK-TS by IQ AI",
 	"scripts": {
 		"start": "tsx ./src/index.ts",
-		"dev": "tsx ./src/index.ts"
+		"dev": "tsx ./src/index.ts",
+		"parallel-search": "tsx ./src/06-mcp-and-integrations/parallel-search.ts",
+		"test:parallel-search": "tsx --test ./tests/parallel-search.test.ts"
 	},
 	"private": true,
 	"author": "IQ AI",

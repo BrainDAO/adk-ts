@@ -77,6 +77,52 @@ To explore the examples, you can either browse all available examples or run a s
   pnpm start --name 06-mcp-and-integrations
 ```
 
+### Opt-in Parallel Search research agent
+
+The standalone Parallel Search example connects `McpToolset` to
+`https://search.parallel.ai/mcp` over Streamable HTTP. Parallel Search MCP is
+free and keyless. Your chosen LLM still needs its usual provider credentials.
+The example does not change the interactive MCP demo or the built-in search tool.
+
+After installing dependencies, build the core package from the repository root:
+
+```bash
+pnpm --filter @iqai/adk build
+```
+
+Configure your LLM credentials and optional `LLM_MODEL` in `apps/examples/.env`
+as described above, then run:
+
+```bash
+cd apps/examples
+pnpm parallel-search "What transports does MCP support? Cite the official specification."
+```
+
+The agent discovers `web_search` and `web_fetch`, searches for evidence, and
+returns an answer with source URLs. It can fetch a specific page when the
+question needs more detail. Search queries and requested URLs are sent to
+Parallel; retrieved content is sent to your configured LLM. No Parallel API key
+or local MCP proxy is required. The connection is closed after the answer or
+an error. Network, service rate limits, and LLM credentials can affect execution.
+
+The configuration lives in
+`src/06-mcp-and-integrations/parallel-search-agent.ts`. ADK-TS names its remote
+transport mode `"sse"`, but implements it with `StreamableHTTPClientTransport`.
+The example sets `User-Agent: adk-ts/parallel-search-example` for discovery and
+tool requests and filters the advertised tools to search and fetch. Use these
+tools in a dedicated agent: the existing Tavily `WebSearchTool` also uses the
+name `web_search`, so adding both to the same agent would cause a name collision.
+
+Run the deterministic example tests without LLM credentials or external requests:
+
+```bash
+pnpm test:parallel-search
+```
+
+These tests use a local MCP fixture and a scripted LLM to check discovery,
+filtering, search and fetch through the ADK runner, a sourced final answer,
+request headers, and connection cleanup.
+
 ## 📚 Explore Example Applications
 
 We have **9 comprehensive examples** that cover the complete ADK-TS feature set, organized in a logical learning progression from basic concepts to advanced implementations:
